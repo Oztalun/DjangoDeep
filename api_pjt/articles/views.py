@@ -2,11 +2,12 @@ from django.shortcuts import render
 from .models import Article, Comment
 from django.http import JsonResponse, HttpResponse
 from django.core import serializers
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
 from .serializers import ArticleSerializer, ArticleDetailSerializer, CommentSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from rest_framework.views import APIView
 
 
@@ -24,6 +25,9 @@ from rest_framework.views import APIView
 #             return Response(serializer.data, status=status.HTTP_201_CREATED)
 #         return Response(serializer.errors, status=400)
 class ArticleListAPIView(APIView):
+    permission_classes = [IsAuthenticated]# 접근 제한
+    
+    
     def get(self, request):
         articles = Article.objects.all()
         serializer = ArticleSerializer(articles, many=True)
@@ -56,6 +60,7 @@ class ArticleListAPIView(APIView):
 #         article.delete()
 #         return Response(status=status.HTTP_204_NO_CONTENT)
 class ArticleDetailAPIView(APIView):
+    permission_classes = [IsAuthenticated]# 접근 제한
     # 두 번 이상 반복되는 로직은 함수로 빼면 좋습니다👀
     def get_object(self, pk):
         return get_object_or_404(Article, pk=pk)
@@ -81,6 +86,7 @@ class ArticleDetailAPIView(APIView):
 
 
 class CommentListAPIView(APIView):
+    permission_classes = [IsAuthenticated]# 접근 제한
     # def get_object(self, pk):
     #     return get_object_or_404(Article, pk=pk)
 
@@ -99,6 +105,7 @@ class CommentListAPIView(APIView):
 
 
 class CommentDetailAPIView(APIView):
+    permission_classes = [IsAuthenticated]# 접근 제한
     def put(self, request, comment_pk):
         comment = get_object_or_404(Comment, pk=comment_pk)
         serializer = CommentSerializer(comment, data=request.data, partial=True)

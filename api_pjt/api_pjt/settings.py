@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -41,8 +42,11 @@ INSTALLED_APPS = [
     'django_seed',
     'rest_framework',
     'django_extensions',
+    'rest_framework_simplejwt.token_blacklist',
     # Local
     'articles',
+    'accounts',
+    'products',
 ]
 
 MIDDLEWARE = [
@@ -86,6 +90,24 @@ DATABASES = {
     }
 }
 
+
+# Custom User Model
+AUTH_USER_MODEL = "accounts.USER"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
+}
+
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": True,# 토큰 재발급
+    "BLACKLIST_AFTER_ROTATION": True,# 토큰 재발급 시 이전 토큰 사용 불가(블랙리스트에 추가)
+    "UPDATE_LAST_LOGIN": True,#로그인 시간 업데이트
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
