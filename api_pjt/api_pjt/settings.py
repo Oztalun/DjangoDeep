@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_extensions',
     'rest_framework_simplejwt.token_blacklist',
+    "silk",
     # Local
     'articles',
     'accounts',
@@ -57,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'silk.middleware.SilkyMiddleware',
 ]
 
 ROOT_URLCONF = 'api_pjt.urls'
@@ -102,7 +104,7 @@ REST_FRAMEWORK = {
 
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": True,# 토큰 재발급
     "BLACKLIST_AFTER_ROTATION": True,# 토큰 재발급 시 이전 토큰 사용 불가(블랙리스트에 추가)

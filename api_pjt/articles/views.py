@@ -25,9 +25,8 @@ from rest_framework.views import APIView
 #             return Response(serializer.data, status=status.HTTP_201_CREATED)
 #         return Response(serializer.errors, status=400)
 class ArticleListAPIView(APIView):
-    permission_classes = [IsAuthenticated]# 접근 제한
-    
-    
+    permission_classes = [IsAuthenticated]  # 접근 제한
+
     def get(self, request):
         articles = Article.objects.all()
         serializer = ArticleSerializer(articles, many=True)
@@ -60,8 +59,9 @@ class ArticleListAPIView(APIView):
 #         article.delete()
 #         return Response(status=status.HTTP_204_NO_CONTENT)
 class ArticleDetailAPIView(APIView):
-    permission_classes = [IsAuthenticated]# 접근 제한
+    permission_classes = [IsAuthenticated]  # 접근 제한
     # 두 번 이상 반복되는 로직은 함수로 빼면 좋습니다👀
+
     def get_object(self, pk):
         return get_object_or_404(Article, pk=pk)
 
@@ -86,7 +86,7 @@ class ArticleDetailAPIView(APIView):
 
 
 class CommentListAPIView(APIView):
-    permission_classes = [IsAuthenticated]# 접근 제한
+    permission_classes = [IsAuthenticated]  # 접근 제한
     # def get_object(self, pk):
     #     return get_object_or_404(Article, pk=pk)
 
@@ -105,10 +105,12 @@ class CommentListAPIView(APIView):
 
 
 class CommentDetailAPIView(APIView):
-    permission_classes = [IsAuthenticated]# 접근 제한
+    permission_classes = [IsAuthenticated]  # 접근 제한
+
     def put(self, request, comment_pk):
         comment = get_object_or_404(Comment, pk=comment_pk)
-        serializer = CommentSerializer(comment, data=request.data, partial=True)
+        serializer = CommentSerializer(
+            comment, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data)
@@ -119,6 +121,53 @@ class CommentDetailAPIView(APIView):
         print("delete")
         comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(["GET"])
+def check_sql_LazyLoading(request):
+    from django.db import connection
+
+    comments = Comment.objects.all()
+    for comment in comments:
+        print(comment.article.title)
+
+    print("-" * 30)
+    print(connection.queries)
+
+    return Response()
+
+
+@api_view(["GET"])
+def check_sql_select_related(request):
+    from django.db import connection
+
+    comments = Comment.objects.all().select_related("article")
+    for comment in comments:
+        print(comment.article.title)
+
+    print("-" * 30)
+    print(connection.queries)
+
+    return Response()
+
+
+@api_view(["GET"])
+def check_sql_prefetch_related(request):
+    from django.db import connection
+
+    articles = Article.objects.all().prefetch_related("comments")
+    for article in articles:
+        comments = article.comments.all()
+        for comment in comments:
+            print(comment.id)
+    # comments = Comment.objects.all().prefetch_related("article")
+    # for comment in comments:
+    #     print(comment.id)
+
+    print("-" * 30)
+    print(connection.queries)
+
+    return Response()
 
 
 def article_list_html(request):

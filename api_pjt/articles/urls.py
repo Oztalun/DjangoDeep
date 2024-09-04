@@ -10,6 +10,9 @@ urlpatterns = [
     # article comment
     path("<int:article_pk>/comments/", views.CommentListAPIView.as_view(), name="comment_list"),
     path("comments/<int:comment_pk>/", views.CommentDetailAPIView.as_view(), name="comment_list"),
+    path("check-sql-LazyLoading/", views.check_sql_LazyLoading, name="check_sql"),
+    path("check-sql-select_related/", views.check_sql_select_related, name="check_sql"),
+    path("check-sql-prefetch_related/", views.check_sql_prefetch_related, name="check_sql"),
     # 
     path("html/", views.article_list_html, name="article_list_html"),
     path("json-01/", views.json_01, name="json_01"),
