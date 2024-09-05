@@ -1,5 +1,7 @@
 # Created by https://www.toptal.com/developers/gitignore/api/django,windows,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=django,windows,visualstudiocode
+config.py
+
 
 ### Django ###
 *.log
