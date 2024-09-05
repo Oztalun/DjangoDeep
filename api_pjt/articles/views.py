@@ -9,7 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from drf_spectacular.utils import extend_schema
 
 # Create your views here.
 # @api_view(["GET", "POST"])
@@ -27,11 +27,20 @@ from rest_framework.views import APIView
 class ArticleListAPIView(APIView):
     permission_classes = [IsAuthenticated]  # 접근 제한
 
+    @extend_schema(
+        tags=["Articles"],
+        description="Article 목록 조회를 위한 API",
+    )
     def get(self, request):
         articles = Article.objects.all()
         serializer = ArticleSerializer(articles, many=True)
         return Response(serializer.data)
 
+    @extend_schema(
+        tags=["Articles"],
+        description="Article 목록 조회를 위한 API",
+        request=ArticleSerializer,
+    )
     def post(self, request):
         serializer = ArticleSerializer(data=request.data)
         if serializer.is_valid():

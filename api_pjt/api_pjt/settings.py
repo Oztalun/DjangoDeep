@@ -12,16 +12,18 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+from . import config
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+OPENAI_API_KEY = config.OPENAI_API_KEY
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-*-v$xb*d)u&&vx3hwi4+-9(u3ctd-641!bqlky2qi_v#--u*0v'
+SECRET_KEY = config.DJANGO_SECRRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -44,6 +46,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework_simplejwt.token_blacklist',
     "silk",
+    'drf_spectacular',
     # Local
     'articles',
     'accounts',
@@ -92,6 +95,16 @@ DATABASES = {
     }
 }
 
+CACHES = {  
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
 
 # Custom User Model
 AUTH_USER_MODEL = "accounts.USER"
@@ -100,6 +113,13 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'MY Django API',
+    'DESCRIPTION': 'Django DRF API Doc',
+    'VERSION': '1.0.0',
 }
 
 
